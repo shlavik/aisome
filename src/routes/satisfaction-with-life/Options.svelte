@@ -1,52 +1,65 @@
 <script>
-  export let key = Math.trunc(Math.random() * Number.MAX_SAFE_INTEGER);
+  import { createEventDispatcher } from "svelte";
+
+  import { lang } from "$lib/stores";
+
+  import strings from "./strings.js";
+
+  const dispatch = createEventDispatcher();
+
+  export let name = Math.trunc(Math.random() * Number.MAX_SAFE_INTEGER);
   export let value;
 
   function onGroupChange({ target }) {
+    const id = target.id.slice(0, -2);
     value = Number(target.value);
+    dispatch("answer", { name, id, value });
   }
 </script>
 
-<fieldset id={key} on:change={onGroupChange}>
+<fieldset id={name} on:change={onGroupChange}>
   <p>
-    <input type="radio" id="strongly-agree-{key}" name={key} value="7" />
-    <label for="strongly-agree-{key}">Strongly agree</label>
+    <input type="radio" id="strongly-agree-{name}" {name} value="7" />
+    <label for="strongly-agree-{name}">{strings[$lang].strongly_agree}</label>
   </p>
 
   <p>
-    <input type="radio" id="agree-{key}" name={key} value="6" />
-    <label for="agree-{key}">Agree</label>
+    <input type="radio" id="agree-{name}" {name} value="6" />
+    <label for="agree-{name}">{strings[$lang].agree}</label>
   </p>
 
   <p>
-    <input type="radio" id="slightly-agree-{key}" name={key} value="5" />
-    <label for="slightly-agree-{key}">Slightly agree</label>
+    <input type="radio" id="slightly-agree-{name}" {name} value="5" />
+    <label for="slightly-agree-{name}">{strings[$lang].slightly_agree}</label>
   </p>
 
   <p>
-    <input type="radio" id="neither-{key}" name={key} value="4" />
-    <label for="neither-{key}">Neither agree nor disagree</label>
+    <input type="radio" id="intermediate-{name}" {name} value="4" />
+    <label for="intermediate-{name}">{strings[$lang].intermediate}</label>
   </p>
 
   <p>
-    <input type="radio" id="slightly-disagree-{key}" name={key} value="3" />
-    <label for="slightly-disagree-{key}">Slightly disagree</label>
+    <input type="radio" id="slightly-disagree-{name}" {name} value="3" />
+    <label for="slightly-disagree-{name}">
+      {strings[$lang].slightly_disagree}
+    </label>
   </p>
 
   <p>
-    <input type="radio" id="disagree-{key}" name={key} value="2" />
-    <label for="disagree-{key}">Disagree</label>
+    <input type="radio" id="disagree-{name}" {name} value="2" />
+    <label for="disagree-{name}">{strings[$lang].disagree}</label>
   </p>
 
   <p>
-    <input type="radio" id="strongly-disagree-{key}" name={key} value="1" />
-    <label for="strongly-disagree-{key}">Strongly disagree</label>
+    <input type="radio" id="strongly-disagree-{name}" {name} value="1" />
+    <label for="strongly-disagree-{name}">
+      {strings[$lang].strongly_disagree}
+    </label>
   </p>
 </fieldset>
 
 <style>
   fieldset {
-    width: 15rem;
     margin: auto;
     padding: 0;
     border: none;

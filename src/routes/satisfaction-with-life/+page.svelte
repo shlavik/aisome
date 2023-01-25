@@ -1,66 +1,77 @@
 <script>
+  import { onMount } from "svelte";
+
   import { base } from "$app/paths";
-  import { answers } from "$lib/stores";
+  import { answers, lang, log } from "$lib/stores";
   import MainButton from "$lib/components/MainButton.svelte";
+
   import Options from "./Options.svelte";
+  import strings from "./strings.js";
 
   const data = [null, null, null, null, null];
 
   let linkEl;
 
+  $: visible = data.every((el) => el !== null);
+  $: text = visible ? strings[$lang].continue : "";
+
+  onMount(() => log("swl|start"));
+
+  function onAnswer({ detail }) {
+    // log("swl|answer", detail);
+  }
+
   function next() {
     $answers = { ...$answers, "satisfaction-with-life": data };
     linkEl.click();
   }
-
-  $: visible = data.every((el) => el !== null);
 </script>
 
 <section>
-  <h3>Step 12 of 13</h3>
+  <h3>{strings[$lang].step}</h3>
 
-  <p>
-    Below are five statements that you may agree or disagree with. Indicate your
-    agreement with each item.
-  </p>
-  <p>Please be open and honest in your responding.</p>
+  <p>{strings[$lang].passed}</p>
+
+  <p>{strings[$lang].below}</p>
+
+  <p>{strings[$lang].honest}</p>
 
   <form>
     <div>
-      <h3>1) In most ways my life is close to my ideal</h3>
-      <Options bind:value={data[0]} />
+      <h3>1) {strings[$lang].first}</h3>
+      <Options name="1" bind:value={data[0]} on:answer={onAnswer} />
     </div>
 
     <div>
-      <h3>2) The conditions of my life are excellent</h3>
-      <Options bind:value={data[1]} />
+      <h3>2) {strings[$lang].second}</h3>
+      <Options name="2" bind:value={data[1]} on:answer={onAnswer} />
     </div>
 
     <div>
-      <h3>3) I am satisfied with my life</h3>
-      <Options bind:value={data[2]} />
+      <h3>3) {strings[$lang].third}</h3>
+      <Options name="3" bind:value={data[2]} on:answer={onAnswer} />
     </div>
 
     <div>
-      <h3>4) So far I have gotten the important things I want in life</h3>
-      <Options bind:value={data[3]} />
+      <h3>4) {strings[$lang].fourth}</h3>
+      <Options name="4" bind:value={data[3]} on:answer={onAnswer} />
     </div>
 
     <div>
-      <h3>5) If I could live my life over, I would change almost nothing</h3>
-      <Options bind:value={data[4]} />
+      <h3>5) {strings[$lang].fifth}</h3>
+      <Options name="5" bind:value={data[4]} on:answer={onAnswer} />
     </div>
   </form>
 
   <!-- svelte-ignore a11y-missing-content -->
   <a style:display="none" href="{base}/well-being-index" bind:this={linkEl} />
 
-  <MainButton text={visible ? "CONTINUE" : ""} {visible} onClick={next} />
+  <MainButton {text} {visible} onClick={next} />
 </section>
 
 <style>
   form div {
-    margin: 3rem 0;
+    margin: 2rem 0;
     padding: 1rem;
     border: 2px solid var(--color-theme-1);
     border-radius: 3px;

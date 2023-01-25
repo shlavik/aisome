@@ -63,32 +63,31 @@
   }
 
   .modal {
+    --size: calc(100vw - 4rem);
+
     position: fixed;
-    z-index: 1002;
+    z-index: 1003;
     top: 50%;
     left: 50%;
+    width: var(--size);
+    height: var(--size);
     padding: 1rem;
     border-radius: 3px;
     background: white;
     transform: translate(-50%, -50%);
   }
 
-  @media (orientation: landscape) {
+  @media (min-aspect-ratio: 4 / 5) {
     .modal {
-      top: 40%;
-      height: calc(100vh - 8rem);
-    }
-  }
+      --size: calc(90vh - 4rem);
 
-  @media (orientation: portrait) {
-    .modal {
-      width: calc(100vw - 4rem);
+      top: 51%;
     }
   }
 
   .header {
     position: absolute;
-    top: -4rem;
+    top: -3rem;
     right: -0.5rem;
     left: -0.5rem;
     display: flex;

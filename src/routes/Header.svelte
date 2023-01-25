@@ -1,6 +1,5 @@
 <script>
   import { base } from "$app/paths";
-  import { page } from "$app/stores";
 </script>
 
 <header>
@@ -16,10 +15,10 @@
         <a href="{base}/image-perception">Image perception</a>
       </li>
       <li>
-        <a href="{base}/well-being-index">Well-being index</a>
+        <a href="{base}/satisfaction-with-life">Satisfaction with life</a>
       </li>
       <li>
-        <a href="{base}/satisfaction-with-life">Satisfaction with life</a>
+        <a href="{base}/well-being-index">Well-being index</a>
       </li>
     </ul>
   </nav>

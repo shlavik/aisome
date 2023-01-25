@@ -1,13 +1,21 @@
 <script>
+  import { onMount } from "svelte";
+
   import { base } from "$app/paths";
-  import { answers } from "$lib/stores";
+  import { lang, log } from "$lib/stores";
   import MainButton from "$lib/components/MainButton.svelte";
+
   import images from "../image-perception/images";
+  import strings from "./strings.js";
 
   let linkEl;
   let visible = false;
 
+  $: text = visible ? strings[$lang].yes : "";
+
   setTimeout(() => (visible = true), 3333);
+
+  onMount(() => log("ins|start"));
 
   function next() {
     linkEl.click();
@@ -21,48 +29,31 @@
 </svelte:head>
 
 <section>
-  <h2>Instruction</h2>
+  <h2>{strings[$lang].instruction}</h2>
 
-  <p>
-    <strong>80 images</strong> in <strong>10 separate sets</strong> will be presented.
-  </p>
+  <p>{@html strings[$lang].images_presented}</p>
 
-  <p>
-    You need to choose <strong>2 images</strong> that are most pleasant
-    <strong>(👍)</strong>. First, the one that you at least relatively prefer to
-    everyone else, then another image that will seem the most likeable among the
-    remaining ones.
-  </p>
+  <p>{@html strings[$lang].choose_pleasant}</p>
 
-  <p>
-    Then you need to choose <strong>2 images</strong> that are the most
-    unpleasant <strong>(👎)</strong>. First, the one that seems the most
-    unpleasant, and then one more among the remaining ones.
-  </p>
+  <p>{@html strings[$lang].choose_unpleasant}</p>
 
-  <p>
-    Thus, it will be necessary to repeat with each of the
-    <strong>10 image sets</strong>.
-  </p>
+  <p>{@html strings[$lang].repeat_each_set}</p>
 
   <dl>
-    <dt><strong>Please use:</strong></dt>
-    <dd><strong>👍 — to choose the most pleasant</strong></dd>
-    <dd><strong>👎 — to choose the most unpleasant</strong></dd>
+    <dt>{@html strings[$lang].please_use}</dt>
+    <dd>{@html strings[$lang].to_pleasant}</dd>
+    <dd>{@html strings[$lang].to_unpleasant}</dd>
   </dl>
 
-  <p>
-    Don't waste too much time thinking, your first immediate reaction is
-    important.
-  </p>
+  <p>{strings[$lang].immediate_reaction}</p>
 
-  <p><strong>Do you understand the instructions?</strong></p>
+  <p>{@html strings[$lang].understand}</p>
 </section>
 
 <!-- svelte-ignore a11y-missing-content -->
 <a style:display="none" href="{base}/image-perception" bind:this={linkEl} />
 
-<MainButton text={visible ? "YES" : ""} {visible} onClick={next} />
+<MainButton {text} {visible} onClick={next} />
 
 <style>
 </style>

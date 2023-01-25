@@ -1,91 +1,177 @@
+import fs from "fs";
+
 import TelegramBot from "node-telegram-bot-api";
 import { JsonDB, Config } from "node-json-db";
 
+import { getHearts, makeCSV } from "./interpretation.js";
+import strings from "./strings.js";
+
 const token = process.env.BOT_TOKEN;
 const webAppBaseUrl = "https://shlavik.github.io/galaimagebot";
-
-const db = new JsonDB(new Config("bot/db", true, true, "/"));
-const logs = new JsonDB(new Config("bot/logs", true, false, "/"));
+const superUsers = [840585, 139695448, 6150954529];
 
 console.warn("¡b0t!");
 
+const userDB = new JsonDB(new Config("bot/db", true, true, "/"));
 const bot = new TelegramBot(token, { polling: true });
 
 bot.on("message", async (msg) => {
-  const messageId = msg.message_id;
-  const lang = msg.from.language_code;
-  const userId = msg.chat.id;
-  const username = msg.chat.username;
-  const name = msg.chat.first_name;
-  const contact = msg.contact;
-  const answersStr = msg.web_app_data?.data;
-  const text = msg.text;
-
-  let userData = { userId, username, name, lang };
-
   try {
-    userData = await db.getData("/" + userId);
-  } catch (error) {
-    console.warn("NEW USER!");
-    await db.push("/" + userId, userData);
-  }
+    const messageId = msg.message_id;
+    const userId = msg.chat.id;
+    const username = msg.chat.username;
+    const name = msg.chat.first_name;
+    const contact = msg.contact;
+    const webAppData = msg.web_app_data?.data;
+    const lang = msg.from.language_code;
+    let text = msg.text;
+    let userData = { userId, username, name, lang };
 
-  if (text === "/start") {
-    handleStart(userData);
-    return;
-  }
+    if (text === "/delme") text = await handleDelMe(userData);
 
-  if (answersStr) {
-    handleWebAppData(userData, answersStr);
-    return;
-  }
+    userData = await updateUserData(userData);
 
-  if (contact) {
-    handleContact(userData, contact);
-    return;
-  }
+    switch (text) {
+      case "/start":
+        return await handleStart(userData);
+      case "/getdb":
+        return isSuperUser(userId) && (await handleGetDB(userData));
+      case "/getcsv":
+        return isSuperUser(userId) && (await handleGetCSV(userData));
+      case "/howmuch":
+        return await handleHowMuch(userData);
+    }
 
-  bot.sendMessage(userId, "To start, type /start");
+    if (webAppData) return await handleWebAppData(userData, webAppData);
+
+    if (contact) return await handleContact(userData, contact);
+
+    bot.sendMessage(userId, getStrings(lang).to_start);
+  } catch (err) {
+    console.error(err);
+  }
 });
 
-async function handleStart({ userId, username, lang, phone, answers }) {
-  await bot.sendMessage(userId, "Hello, dear human @" + username + "!");
+function isSuperUser(userId) {
+  return superUsers.includes(Number(userId));
+}
+
+function checkLang(lang) {
+  return lang === "ru" ? "ru" : "en";
+}
+
+function getStrings(lang) {
+  return strings[checkLang(lang)] || {};
+}
+
+async function updateUserData(userData = {}) {
+  const { userId, username, name } = userData;
+  if (!userId) return userData;
+  try {
+    return { ...(await userDB.getData("/" + userId)), ...userData };
+  } catch (error) {
+    const now = new Date();
+    userData.timestamp = now.valueOf();
+    await userDB.push("/" + userId, userData);
+    const dateTimeStr = now.toISOString().slice(0, 19).replace("T", " ");
+    console.warn(dateTimeStr, "NEW USER!", userId, username, name);
+    return userData;
+  }
+}
+
+async function handleStart({ userId, username, name, lang, phone, answers }) {
+  name = username ? "@" + username : name;
+  await bot.sendMessage(userId, getStrings(lang).hello + " " + name + "!");
   if (!answers) {
-    await bot.sendMessage(
-      userId,
-      `We invite you to take part in an interactive study of individual perception and interpretation of abstract images – digital arts, connection with emotional and cognitive processes, life satisfaction and well-being. Completed communication via the app will take from 5 to 10 minutes of your time. All data of your activity while the application is running will be available for research purposes only.`
-    );
+    await bot.sendMessage(userId, getStrings(lang).intro);
     showTakeTheSurveyButton(userId, lang);
     return;
   }
-  if (!phone) return showShareContactButton(userId);
-  await bot.sendMessage(userId, "You did your best, nothing to do!", {
+  if (!phone) return showShareContactButton(userId, lang);
+  await bot.sendMessage(userId, getStrings(lang).nothing_to_do, {
     reply_markup: {
       remove_keyboard: true,
     },
   });
 }
 
-async function handleWebAppData({ userId, username, lang, phone }, answersStr) {
-  const answersObj = JSON.parse(answersStr);
-  await db.push("/" + userId + "/answers", answersObj);
-  console.warn("NEW ANSWERS!");
+async function handleDelMe({ userId, username, name }) {
+  await userDB.delete("/" + userId);
+  const dateTimeStr = new Date().toISOString().slice(0, 19).replace("T", " ");
+  console.warn(dateTimeStr, "DEL ME!", userId, username, name);
+  await bot.sendMessage(userId, "🫧");
+  return "/start";
+}
+
+async function handleGetDB({ userId, username, name }) {
+  const dateTimeStr = new Date().toISOString().slice(0, 19).replace("T", " ");
+  console.warn(dateTimeStr, "GET DB!", userId, username, name);
+  await bot.sendDocument(
+    userId,
+    "bot/db.json",
+    {},
+    { contentType: "application/json" }
+  );
+}
+
+async function handleGetCSV({ userId, username, name }) {
+  const data = await userDB.getData("/");
+  const csv = makeCSV(data);
+  fs.writeFileSync("bot/users.csv", csv);
+  const dateTimeStr = new Date().toISOString().slice(0, 19).replace("T", " ");
+  console.warn(dateTimeStr, "GET CSV!", userId, username, name);
+  await bot.sendDocument(
+    userId,
+    "bot/users.csv",
+    {},
+    { contentType: "text/csv" }
+  );
+}
+
+async function handleHowMuch({ userId }) {
+  const data = await userDB.getData("/");
+  const entries = Object.entries(data);
+  const withAnswers = entries.filter(([_, { answers }]) => answers);
   await bot.sendMessage(
     userId,
-    "Congrats, you are done this survey!\nThank you for taking part of it!"
+    "Started: <code>" +
+      entries.length +
+      "</code>\nAnswered: <code>" +
+      withAnswers.length +
+      "</code>",
+    {
+      parse_mode: "HTML",
+    }
   );
+}
+
+async function handleWebAppData(userData, webAppData) {
+  const { userId, username, name, lang } = userData;
+  const data = JSON.parse(webAppData);
+  const { answers, logs } = data;
+  const now = new Date();
+  answers.timestamp = now.valueOf();
+  await userDB.push("/" + userId, { ...userData, answers, logs });
+  const dateTimeStr = now.toISOString().slice(0, 19).replace("T", " ");
+  console.warn(dateTimeStr, "NEW ANSWERS!", userId, username, name);
+  await bot.sendMessage(userId, getStrings(lang).congratulations);
+  const heartsStr = " " + getHearts(answers) + "\n\n";
   await bot.sendMessage(
     userId,
-    "Your total score: 💚💛💚\n\nNote:\n1st emoji heart is your rate of positive;\n2nd emoji heart is your rate of life satisfaction;\n3rd emoji heart is your well-being rate.\n\nThe color of emoji heart indicates the volume of rates: 🚥\n\nHave an idea and a feed, please contact with us.\nStay well and safe!"
+    getStrings(lang).score_total +
+      heartsStr +
+      getStrings(lang).score_annotation,
+    {
+      parse_mode: "HTML",
+    }
   );
-  showShareContactButton(userId);
+  showShareContactButton(userId, lang);
 }
 
 async function handleContact(userData, contact) {
-  const phone = contact.phone_number;
-  userData.phone = phone;
-  await db.push("/" + userData.userId + "/phone", phone);
-  await bot.sendMessage(userData.userId, "Thanks for sharing!", {
+  const { userId, lang } = userData;
+  await userDB.push("/" + userId + "/phone", contact.phone_number);
+  await bot.sendMessage(userId, getStrings(lang).sharing_thanks, {
     reply_markup: {
       remove_keyboard: true,
     },
@@ -94,34 +180,26 @@ async function handleContact(userData, contact) {
 
 async function showTakeTheSurveyButton(userId, lang) {
   const surveyBtn = {
-    text: "🗳 Take the Survey!",
+    text: getStrings(lang).take_survey_btn,
     web_app: {
-      url: webAppBaseUrl + "/diversity-3q#lang=" + lang,
+      url: webAppBaseUrl + "/diversity-3q#lang=" + checkLang(lang),
     },
   };
-  await bot.sendMessage(
-    userId,
-    "To start the interaction, press button below 👇",
-    {
-      reply_markup: {
-        keyboard: [[surveyBtn]],
-      },
-    }
-  );
+  await bot.sendMessage(userId, getStrings(lang).to_interaction, {
+    reply_markup: {
+      keyboard: [[surveyBtn]],
+    },
+  });
 }
 
-async function showShareContactButton(userId) {
+async function showShareContactButton(userId, lang) {
   const contactBtn = {
-    text: "📲 Share my phone number",
+    text: getStrings(lang).share_phone_btn,
     request_contact: true,
   };
-  await bot.sendMessage(
-    userId,
-    "You can also share your contact info (it is not necessary to do) 👇",
-    {
-      reply_markup: {
-        keyboard: [[contactBtn]],
-      },
-    }
-  );
+  await bot.sendMessage(userId, getStrings(lang).share_phone_info, {
+    reply_markup: {
+      keyboard: [[contactBtn]],
+    },
+  });
 }

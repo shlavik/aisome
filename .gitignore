@@ -13,3 +13,4 @@ vite.config.ts.timestamp-*
 
 /bot/db.json
 /bot/logs.json
+/bot/users.csv
