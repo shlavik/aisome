@@ -1,0 +1,1 @@
+import{w as s}from"./index-feb1b1f7.js";const{hash:r="#"}=(globalThis||window).location||{},c=new URLSearchParams(r.slice(1)),e=c.get("lang")||"ru",g=s(e==="ru"?"ru":"en"),m=s({}),l=s([]);function u(a,n){const t=Date.now(),i=n?[t,a,n]:[t,a];l.update(o=>(o.push(i),o))}export{m as a,u as b,g as l};
