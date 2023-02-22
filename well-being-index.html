@@ -30,19 +30,20 @@
       gtag("config", "G-KRVGPCFD1S");
     </script>
     <meta http-equiv="content-security-policy" content="">
-		<link href="/galaimagebot/_app/immutable/assets/_layout-4d7434c0.css" rel="stylesheet">
-		<link href="/galaimagebot/_app/immutable/assets/_page-883b4886.css" rel="stylesheet">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/start-5c21fc52.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/chunks/index-257418f0.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/chunks/singletons-0bcf24b3.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/chunks/index-feb1b1f7.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/chunks/paths-c0de9dde.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/components/pages/_layout.svelte-07a3a195.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/modules/pages/_layout.js-9cbb603b.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/chunks/_layout-da46b06b.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/components/pages/well-being-index/_page.svelte-83ad37ff.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/chunks/index-1c36e539.js">
-		<link rel="modulepreload" href="/galaimagebot/_app/immutable/chunks/MainButton-40ad1ba0.js"><title>Gala Image</title><!-- HEAD_svelte-1hswocn_START --><!-- HEAD_svelte-1hswocn_END -->
+		<link href="/galaimagebot/_app/immutable/assets/_layout.4d7434c0.css" rel="stylesheet">
+		<link href="/galaimagebot/_app/immutable/assets/_page.883b4886.css" rel="stylesheet">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/start.c08ae640.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/index.c9e1d74b.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/singletons.258dba50.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/index.dc39c8eb.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/paths.1669e34a.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/app.428a3008.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/_layout.svelte.1b9e9a67.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/_layout.js.fb1865a6.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/_layout.da46b06b.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/well-being-index-page.svelte.df51fffd.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/index.8dd57b2e.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/MainButton.ca2e9883.mjs"><title>Gala Image</title><!-- HEAD_svelte-1hswocn_START --><!-- HEAD_svelte-1hswocn_END -->
   </head>
   <body data-sveltekit-preload-data="hover">
     <noscript>
@@ -170,22 +171,30 @@
 </main>
 
 
-		<script type="module" data-sveltekit-hydrate="z3tlk2">
-			import { start } from "/galaimagebot/_app/immutable/start-5c21fc52.js";
+			
+			<script>
+				{
+					__sveltekit_1yasann = {
+						env: {},
+						assets: "/galaimagebot",
+						element: document.currentScript.parentElement
+					};
 
-			start({
-				assets: "/galaimagebot",
-				env: {},
-				target: document.querySelector('[data-sveltekit-hydrate="z3tlk2"]').parentNode,
-				version: "1676898376453",
-				hydrate: {
-					node_ids: [0, 7],
-					data: [null,null],
-					form: null,
-					error: null
+					const data = [null,null];
+
+					Promise.all([
+						import("/galaimagebot/_app/immutable/entry/start.c08ae640.mjs"),
+						import("/galaimagebot/_app/immutable/entry/app.428a3008.mjs")
+					]).then(([kit, app]) => {
+						kit.start(app, __sveltekit_1yasann.element, {
+							node_ids: [0, 7],
+							data,
+							form: null,
+							error: null
+						});
+					});
 				}
-			});
-		</script>
-	</div>
+			</script>
+		</div>
   </body>
 </html>
