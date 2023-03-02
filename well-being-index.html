@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="/galaimagebot/favicon.png" />
+    <link rel="icon" href="./favicon.png" />
     <meta name="viewport" content="width=device-width" />
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
@@ -30,20 +30,20 @@
       gtag("config", "G-KRVGPCFD1S");
     </script>
     <meta http-equiv="content-security-policy" content="">
-		<link href="/galaimagebot/_app/immutable/assets/_layout.4d7434c0.css" rel="stylesheet">
-		<link href="/galaimagebot/_app/immutable/assets/_page.883b4886.css" rel="stylesheet">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/start.8b79d3f0.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/index.c9e1d74b.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/singletons.87ac13df.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/index.dc39c8eb.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/paths.7d1e8b2f.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/app.155a671f.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/_layout.svelte.1b9e9a67.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/_layout.js.fb1865a6.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/_layout.da46b06b.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/entry/well-being-index-page.svelte.df51fffd.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/index.8dd57b2e.mjs">
-		<link rel="preload" as="script" crossorigin="anonymous" href="/galaimagebot/_app/immutable/chunks/MainButton.ca2e9883.mjs"><title>Gala Image</title><!-- HEAD_svelte-1hswocn_START --><!-- HEAD_svelte-1hswocn_END -->
+		<link href="./_app/immutable/assets/_layout.4d7434c0.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/_page.883b4886.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.a7bd0a21.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.c9e1d74b.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.d6d5b49d.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.e1d103d1.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/paths.5cc9849b.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.7b0f9f4f.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/_layout.svelte.c96b9d30.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/_layout.js.984db11e.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/_layout.da46b06b.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/well-being-index-page.svelte.4ac380ba.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.034f6a84.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/MainButton.4d74500b.js"><title>Gala Image</title><!-- HEAD_svelte-1hswocn_START --><!-- HEAD_svelte-1hswocn_END -->
   </head>
   <body data-sveltekit-preload-data="hover">
     <noscript>
@@ -174,19 +174,20 @@
 			
 			<script>
 				{
-					__sveltekit_i3rmig = {
+					__sveltekit_1sbuvlc = {
 						env: {},
 						assets: "/galaimagebot",
+						base: new URL(".", location).pathname.slice(0, -1),
 						element: document.currentScript.parentElement
 					};
 
 					const data = [null,null];
 
 					Promise.all([
-						import("/galaimagebot/_app/immutable/entry/start.8b79d3f0.mjs"),
-						import("/galaimagebot/_app/immutable/entry/app.155a671f.mjs")
+						import("./_app/immutable/entry/start.a7bd0a21.js"),
+						import("./_app/immutable/entry/app.7b0f9f4f.js")
 					]).then(([kit, app]) => {
-						kit.start(app, __sveltekit_i3rmig.element, {
+						kit.start(app, __sveltekit_1sbuvlc.element, {
 							node_ids: [0, 7],
 							data,
 							form: null,
