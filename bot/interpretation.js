@@ -91,17 +91,22 @@ const imagePerceptionKeys = {
 };
 
 /**
+ * -4 <= x <= 4;
+ * @returns {number} x;
+ */
+function getImagePerceptionStepSum(step) {
+  return Object.entries(step).reduce((acc, [key, val]) => {
+    const temp = val * (imagePerceptionKeys[key] || 0);
+    return acc + temp;
+  }, 0);
+}
+
+/**
  * -40 <= x <= 40;
  * @returns {number} x;
  */
 export function getImagePerceptionResult(answer) {
-  return answer.reduce((sum, el) => {
-    const res = Object.entries(el).reduce((acc, [key, val]) => {
-      const temp = val * (imagePerceptionKeys[key] || 0);
-      return acc + temp;
-    }, 0);
-    return sum + res;
-  }, 0);
+  return answer.reduce((sum, el) => sum + getImagePerceptionStepSum(el), 0);
 }
 
 /**
@@ -214,6 +219,24 @@ function getRace(answers) {
     : "";
 }
 
+function getImgAnsSum(answers) {
+  const answer = answers["image-perception"] || [];
+  return answer.reduce(
+    (acc, el, i) => {
+      const ans = JSON.stringify(el).slice(1, -1);
+      const sum = getImagePerceptionStepSum(el);
+      acc[2 * i] = ans;
+      acc[2 * i + 1] = sum;
+      return acc;
+    },
+    Array.from({ length: 20 }, () => [])
+  );
+}
+
+function getLogs(logs = []) {
+  return logs.map(([t]) => formatTimestamp(t));
+}
+
 function stringify([userId, userData]) {
   const {
     username = "",
@@ -240,8 +263,9 @@ function stringify([userId, userData]) {
     getGender(answers),
     getOrigins(answers),
     getRace(answers),
-    ...(logs || []).map(([t]) => formatTimestamp(t)),
-  ].join(", ");
+    ...getImgAnsSum(answers),
+    ...getLogs(logs),
+  ].join("; ");
   return string;
 }
 
@@ -249,10 +273,10 @@ export function makeCSV(data) {
   const entries = Object.entries(data);
   const withAnswers = entries.filter(([_, { answers }]) => answers);
   const sorted = withAnswers.sort(compare);
-  const strings = sorted.map(stringify);
+  const rows = sorted.map(stringify);
   const header =
-    "CREATED, ANSWERED, HEARTS, IMG, SWL, WBI, USERNAME, NAME, USERID, PHONE, LANG, AGE, GENDER, ORIGINS, RACE, D3Q|START, INS|START, IMG1|START, IMG2|START, IMG3|START, IMG4|START, IMG5|START, IMG6|START, IMG7|START, IMG8|START, IMG9|START, IMG10|START, SWL|START, WBI|START";
-  return [header, ...strings].join("\n");
+    "CREATED; ANSWERED; HEARTS; IMG; SWL; WBI; USERNAME; NAME; USERID; PHONE; LANG; AGE; GENDER; ORIGINS; RACE; IMG1|ANS; IMG1|SUM; IMG2|ANS; IMG2|SUM; IMG3|ANS; IMG3|SUM; IMG4|ANS; IMG4|SUM; IMG5|ANS; IMG5|SUM; IMG6|ANS; IMG6|SUM; IMG7|ANS; IMG7|SUM; IMG8|ANS; IMG8|SUM; IMG9|ANS; IMG9|SUM; IMG10|ANS; IMG|SUM; D3Q|START; INS|START; IMG1|START; IMG2|START; IMG3|START; IMG4|START; IMG5|START; IMG6|START; IMG7|START; IMG8|START; IMG9|START; IMG10|START; SWL|START; WBI|START";
+  return [header, ...rows].join("\n");
 }
 
 function compare(...args) {

@@ -1,3 +1,3 @@
-# galaimagebot
+# Gala image bot
 
-> tg: @galaimagebot
+[t.me/galaimagebot](https://t.me/galaimagebot)
