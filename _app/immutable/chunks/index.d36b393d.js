@@ -1,1 +1,0 @@
-import{w as s}from"./index.69b87f9c.js";const{hash:i="#"}=(globalThis||window).location||{},r=new URLSearchParams(i.slice(1)),e=r.get("lang")||"ru",w=s(e==="ru"?"ru":"en"),m=s({}),l=s([]);function u(a,n){const t=Date.now(),o=n?[t,a,n]:[t,a];l.update(c=>[...c,o])}export{m as a,u as b,l as c,w as l};
